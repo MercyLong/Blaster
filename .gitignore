@@ -4,3 +4,6 @@
 /Intermediate
 /Saved
 /Dist
+/Plugins/*/Binaries
+/Plugins/*/Saved
+*/*/Intermediate
