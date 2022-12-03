@@ -4,36 +4,31 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "InterFaces/OnlineSessionInterface.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "Menu.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MUTIPLAYERSESSIONS_API UMenu : public UUserWidget
+class MULTIPLAYERSESSIONS_API UMenu : public UUserWidget
 {
 	GENERATED_BODY()
-	
 public:
-
 	UFUNCTION(BlueprintCallable)
-	void MenuSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")));
+	void MenuSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")), FString LobbyPath = FString(TEXT("/Game/ThirdPersonCPP/Maps/Lobby")));
 
 protected:
 
-	// 初始化函数
 	virtual bool Initialize() override;
-
-	// 当跳转至其他关卡时
 	virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
 
-	// 
-	// 在多人会话子系统中的自定义代理委托的回调函数
-	// 
+	//
+	// Callbacks for the custom delegates on the MultiplayerSessionsSubsystem
+	//
 	UFUNCTION()
 	void OnCreateSession(bool bWasSuccessful);
-	void OnFindSessions(const TArray<FOnlineSessionSearchResult>& SessionResult, bool bWasSuccessful);
+	void OnFindSessions(const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
 	void OnJoinSession(EOnJoinSessionCompleteResult::Type Result);
 	UFUNCTION()
 	void OnDestroySession(bool bWasSuccessful);
@@ -54,12 +49,12 @@ private:
 	UFUNCTION()
 	void JoinButtonClicked();
 
-	// 处理所有在线会话功能的子系统
-	class UMutiplayerSessionsSubsystem* MutiPlayerSessionsSubsystem;
+	void MenuTearDown();
 
-	// 菜单拆除函数，在进入大厅后将角色操作重置为默认
-	void MenuTeardown();
+	// The subsystem designed to handle all online session functionality
+	class UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
 
-	int32 NumPublicConnections = { 4 };
-	FString MatchType = TEXT("FreeForAll");
+	int32 NumPublicConnections{4};
+	FString MatchType{TEXT("FreeForAll")};
+	FString PathToLobby{TEXT("")};
 };
